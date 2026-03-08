@@ -15,17 +15,17 @@ const USER_VARS = {
     TROJAN_PATH: process.env.TROJAN_PATH || "/trojan",
     XTUNNEL_PATH: process.env.XTUNNEL_PATH || "/xt",
     
-    XTUNNEL_TOKEN: process.env.XTUNNEL_TOKEN || "fxpass",
+    XTUNNEL_TOKEN: process.env.XTUNNEL_TOKEN || "",
     
-    CF_JSON: process.env.CF_JSON || '{"AccountTag":"508d404b8b5b65f7b6eb0c2a08f1160a","TunnelSecret":"ti8kUhRUQUCQ6ZhjdG4t+msyuavqipYn4O9TdrPzrSc=","TunnelID":"7ed49caf-f99e-499d-a7e8-b7d93c9622e8","Endpoint":""}',
-    CF_TUNNEL_NAME: process.env.CF_TUNNEL_NAME || "temp", 
-    CF_DOMAIN: process.env.CF_DOMAIN || "temp.mcall.de5.net",
+    CF_JSON: process.env.CF_JSON || '',
+    CF_TUNNEL_NAME: process.env.CF_TUNNEL_NAME || "", 
+    CF_DOMAIN: process.env.CF_DOMAIN || "",
     
     SUB_PATH: process.env.SUB_PATH || "/sub",
     EXPORT_PATH: "/export_sub", // 订阅导出路径
-    PANEL_PASS: process.env.PANEL_PASS || "778899",
+    PANEL_PASS: process.env.PANEL_PASS || "",
     
-    XRAY_START: (process.env.XRAY_START || "1") === "1",
+    XRAY_START: (process.env.XRAY_START || "0") === "1",
     XTUNNEL_START: (process.env.XTUNNEL_START || "1") === "1",
     KOMARI_START: (process.env.KOMARI_START || "0") === "1",
     CF_START: true, 
@@ -35,10 +35,10 @@ const USER_VARS = {
     VMESS_PORT: 8402,    // VMess WS
     TROJAN_PORT: 8403,   // Trojan WS
     XTUNNEL_PORT: 8405,   
-    WEB_PORT: parseInt(process.env.PORT || 20064 ), 
+    WEB_PORT: parseInt(process.env.PORT || 80 ), 
 
-    KOMARI_ENDPOINT: process.env.KOMARI_ENDPOINT || 'https://komari.mygcp.tk',
-    KOMARI_TOKEN: process.env.KOMARI_TOKEN || 'Q2gTdIOfrQz00t8T',
+    KOMARI_ENDPOINT: process.env.KOMARI_ENDPOINT || '',
+    KOMARI_TOKEN: process.env.KOMARI_TOKEN || '',
     MAX_LOG_LINES: 30 
 };
 
@@ -280,5 +280,6 @@ async function main() {
         }
     }
 }
+
 
 main().catch(e => console.error("Critical Main Error:", e));
