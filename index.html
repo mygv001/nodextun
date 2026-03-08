@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>静候时光 | 个人笔记与技术随笔</title>
+    <style>
+        :root {
+            --primary-color: #333;
+            --secondary-color: #666;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --accent-color: #4a90e2;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--primary-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: var(--card-bg);
+            border-bottom: 1px solid #eee;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .nav {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+        }
+
+        .nav a:hover {
+            color: var(--accent-color);
+        }
+
+        .post-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .post-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .post-meta {
+            font-size: 0.8rem;
+            color: #999;
+            margin-bottom: 0.5rem;
+        }
+
+        .post-title {
+            margin: 0.5rem 0;
+            color: var(--primary-color);
+        }
+
+        .post-excerpt {
+            color: var(--secondary-color);
+            font-size: 0.95rem;
+        }
+
+        .read-more {
+            display: inline-block;
+            margin-top: 1rem;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            color: #999;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 600px) {
+            .container { margin-top: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>静候时光</h1>
+    <p style="color: #888; font-style: italic;">记录技术成长，分享生活点滴</p>
+</header>
+
+<div class="container">
+    <nav class="nav">
+        <a href="#">首页</a>
+        <a href="#">归档</a>
+        <a href="#">关于我</a>
+        <a href="#">开源项目</a>
+    </nav>
+
+    <main>
+        <article class="post-card">
+            <div class="post-meta">发布于 2023年10月24日 · 标签: Python, 后端</div>
+            <h2 class="post-title">浅谈 Python 装饰器的进阶用法</h2>
+            <p class="post-excerpt">装饰器是 Python 中非常有用的语法糖，但在处理异步函数以及带参数的装饰器时，往往会遇到一些意想不到的坑。今天我们来深入探讨一下 wraps 库的必要性...</p>
+            <a href="#" class="read-more">阅读全文 →</a>
+        </article
