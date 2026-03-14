@@ -1,8 +1,6 @@
 FROM node:alpine3.20
 
-WORKDIR /tmp
 
-COPY . /tmp/.
 
 EXPOSE 80/tcp
 
