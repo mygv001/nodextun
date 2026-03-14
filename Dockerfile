@@ -1,6 +1,6 @@
 FROM node:alpine3.20
 
-
+COPY . .
 
 EXPOSE 80/tcp
 
