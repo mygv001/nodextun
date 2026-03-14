@@ -25,9 +25,9 @@ const USER_VARS = {
     EXPORT_PATH: "/export_sub", // 订阅导出路径
     PANEL_PASS: process.env.PANEL_PASS || "",
     
-    XRAY_START: (process.env.XRAY_START || "1") === "1",
+    XRAY_START: (process.env.XRAY_START || "0") === "1",
     XTUNNEL_START: (process.env.XTUNNEL_START || "1") === "1",
-    KOMARI_START: (process.env.KOMARI_START || "1") === "1",
+    KOMARI_START: (process.env.KOMARI_START || "0") === "1",
     CF_START: true, 
 
     // 内部端口分配
