@@ -1,8 +1,8 @@
 FROM node:alpine3.20
 
-WORKDIR /
+WORKDIR /tmp
 
-COPY . .
+COPY index.js package.json ./
 
 EXPOSE 80/tcp
 
