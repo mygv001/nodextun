@@ -25,9 +25,9 @@ const USER_VARS = {
     EXPORT_PATH: "/export_sub", // 订阅导出路径
     PANEL_PASS: process.env.PANEL_PASS || "",
     
-    XRAY_START: (process.env.XRAY_START || "0") === "1",
+    XRAY_START: (process.env.XRAY_START || "1") === "1",
     XTUNNEL_START: (process.env.XTUNNEL_START || "1") === "1",
-    KOMARI_START: (process.env.KOMARI_START || "0") === "1",
+    KOMARI_START: (process.env.KOMARI_START || "1") === "1",
     CF_START: true, 
 
     // 内部端口分配
@@ -35,7 +35,7 @@ const USER_VARS = {
     VMESS_PORT: 8402,    // VMess WS
     TROJAN_PORT: 8403,   // Trojan WS
     XTUNNEL_PORT: 8405,   
-    WEB_PORT: parseInt(process.env.PORT || 80 ), 
+    WEB_PORT: parseInt(process.env.PORT || 8400 ), 
 
     KOMARI_ENDPOINT: process.env.KOMARI_ENDPOINT || '',
     KOMARI_TOKEN: process.env.KOMARI_TOKEN || '',
@@ -130,17 +130,10 @@ function stopService(key) {
 function getLinks() {
     const domain = USER_VARS.CF_DOMAIN;
     const uuid = USER_VARS.UUID;
-
-    // VLESS
-    const vless = `vless://${uuid}@${domain}:443?encryption=none&security=tls&type=ws&host=${domain}&path=${encodeURIComponent(USER_VARS.XRAY_PATH)}#VLESS_${domain}`;
-    
-    // VMess
+    const vless = `vless://${uuid}@saas.sin.fan:443?encryption=none&security=tls&type=ws&host=${domain}&path=${encodeURIComponent(USER_VARS.XRAY_PATH)}#VLESS_${domain}`;
     const vmessJson = { v: "2", ps: `VMESS_${domain}`, add: domain, port: "443", id: uuid, aid: "0", scy: "auto", net: "ws", type: "none", host: domain, path: USER_VARS.VMESS_PATH, tls: "tls", sni: domain };
     const vmess = `vmess://${Buffer.from(JSON.stringify(vmessJson)).toString('base64')}`;
-    
-    // Trojan (密码同 UUID)
-    const trojan = `trojan://${uuid}@${domain}:443?security=tls&type=ws&host=${domain}&path=${encodeURIComponent(USER_VARS.TROJAN_PATH)}#TROJAN_${domain}`;
-
+    const trojan = `trojan://${uuid}@cf.090227.xyz:443?security=tls&type=ws&host=${domain}&path=${encodeURIComponent(USER_VARS.TROJAN_PATH)}#TROJAN_${domain}`;
     return { vless, vmess, trojan };
 }
 
@@ -162,7 +155,8 @@ const COMMON_STYLE = `
     .btn-start { background: var(--main); color: #000; }
     .btn-stop { background: #333; color: var(--btn-stop); }
     .sub-box { background: #000; padding: 10px; border: 1px dashed #444; font-size: 10px; word-break: break-all; margin: 8px 0; color: #ffcc00; max-height: 60px; overflow-y: auto; }
-    .log-container { background: #000; padding: 12px; border-radius: 8px; height: 500px; overflow-y: auto; font-size: 12px; color: #888; white-space: pre-wrap; line-height: 1.6; border: 1px solid #222; }
+    /* 改进：将日志框高度拉高，与左侧订阅面板大致对齐 */
+    .log-container { background: #000; padding: 12px; border-radius: 8px; height: 680px; overflow-y: auto; font-size: 12px; color: #888; white-space: pre-wrap; line-height: 1.6; border: 1px solid #222; }
     .copy-btn { background: #444; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; }
 </style>`;
 
@@ -170,7 +164,7 @@ const server = http.createServer((req, res) => {
     const urlObj = new URL(req.url, `http://${req.headers.host}`);
     const pathname = urlObj.pathname;
 
-    // 订阅导出接口 (Base64)
+    // 1. 订阅导出接口 (Base64)
     if (pathname === USER_VARS.EXPORT_PATH) {
         const links = getLinks();
         const content = Buffer.from(Object.values(links).join('\n')).toString('base64');
@@ -178,6 +172,7 @@ const server = http.createServer((req, res) => {
         return res.end(content);
     }
 
+    // 2. 控制面板接口
     if (pathname === USER_VARS.SUB_PATH) {
         const isAuth = (req.headers.cookie || "").includes(`sid=${USER_VARS.PANEL_PASS}`);
         if (urlObj.searchParams.get('pass') === USER_VARS.PANEL_PASS) {
@@ -228,7 +223,16 @@ const server = http.createServer((req, res) => {
         return res.end(`<html><head>${COMMON_STYLE}<title>Multiplex Panel</title></head><body><div class="wrapper"><div class="main-layout"><div class="card"><div class="header">SERVICES CONTROL</div><div class="service-grid">${cardsHtml}</div><div class="header" style="margin-top:20px;">SUBSCRIPTION LINKS</div>${subHtml}<div style="margin-top:15px; padding:10px; background:#333; border-radius:8px; font-size:10px; text-align:center">Sub URL:<br/><code style="color:var(--main)">http://${USER_VARS.CF_DOMAIN}${USER_VARS.EXPORT_PATH}</code></div></div><div class="card"><div class="header">REAL-TIME LOGS</div><pre class="log-container">${runningLogs.slice().reverse().join('\n')}</pre></div></div></div><script>setTimeout(()=> { if(!window.location.search) location.reload(); }, 10000);</script></body></html>`);
     }
 
-    res.writeHead(200); res.end("Node Multiplexer Active");
+    // 3. 改进：伪装页逻辑 - 优先支持 index.html
+    const indexPath = path.join(process.cwd(), 'index.html');
+    if (fs.existsSync(indexPath)) {
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+        return res.end(fs.readFileSync(indexPath));
+    }
+
+    // 默认兜底页面
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end(`<html><body style="background:#000;color:#333;display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;margin:0;"><h1>403 Forbidden</h1></body></html>`);
 });
 
 // ================= 6. WebSocket 分流枢纽 =================
@@ -260,7 +264,7 @@ server.on('upgrade', (req, socket, head) => {
 async function main() {
     try { fs.writeFileSync(CF_CREDS_PATH, USER_VARS.CF_JSON); } catch (e) {}
 
-    // 生成 Xray 配置 (移除了 gRPC)
+    // 生成 Xray 配置
     const xrayCfg = {
         inbounds: [
             { port: USER_VARS.XRAY_PORT, listen: "127.0.0.1", protocol: "vless", settings: { clients: [{ id: USER_VARS.UUID }], decryption: "none" }, streamSettings: { network: "ws", wsSettings: { path: USER_VARS.XRAY_PATH } } },
@@ -280,6 +284,5 @@ async function main() {
         }
     }
 }
-
 
 main().catch(e => console.error("Critical Main Error:", e));
