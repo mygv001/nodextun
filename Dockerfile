@@ -1,10 +1,10 @@
 FROM node:alpine3.20
 
-WORKDIR /tmp
+WORKDIR /
 
 COPY . .
 
-EXPOSE 8405/tcp
+EXPOSE 80/tcp
 
 RUN apk update && apk upgrade &&\
     apk add --no-cache openssl curl gcompat iproute2 coreutils &&\
